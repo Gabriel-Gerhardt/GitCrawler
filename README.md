@@ -21,7 +21,7 @@ Send github repos and files extension or packages wanted -> return all files fou
 ## Set-up
 
 ```bash
-git clone [Link](https://github.com/Gabriel-Gerhardt/GitCrawler)
+git clone ![Link](https://github.com/Gabriel-Gerhardt/GitCrawler)
 cd GitCrawler
 docker compose up
 ```
