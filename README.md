@@ -1,11 +1,10 @@
-## <Project Name>
+## GitCrawler
 
-<Project fast description>
-  
+Rest API that trims repoitories from github and return only the necessary data
+
 ## How It Works
 
 <Specified project description>
-
 
 ## Diagram
 
@@ -13,20 +12,18 @@
   
 ## Tech Stack
 
-<Stack of the project>
-
-
+Golang
 
 ## Use Cases
 
-<Why the project is useful>
+Send github repos and files extension or packages wanted -> return all files found that matches with the configuration
 
 ## Set-up
 
 ```bash
-git clone <Link>
-cd <Project name>
-<other comands>
+git clone [Link](https://github.com/Gabriel-Gerhardt/GitCrawler)
+cd GitCrawler
+docker compose up
 ```
 
 Access:
