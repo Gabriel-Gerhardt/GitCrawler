@@ -14,9 +14,16 @@ func NewRepositoryFacade() *RepositoryFacade {
 	return &RepositoryFacade{service.NewCloneService(), service.NewCrawlerService()}
 }
 
-func (c *RepositoryFacade) GetAllRepositoryFiles(url string) *http.Response {
-	return c.cloneService.CloneRepository(url)
-}
-func (c *RepositoryFacade) ReturnUrl(url string) string {
-	return url
+func (c *RepositoryFacade) GetAllRepositoryFiles(url string) (err error, response http.Response) {
+	_, err, response = c.cloneService.CloneRepository(url)
+	if err != nil {
+		return err, response
+	}
+	/*defer func(path string) {
+		err := os.RemoveAll(path)
+		if err != nil {
+			return
+		}
+	}(path) */
+	return nil, response
 }

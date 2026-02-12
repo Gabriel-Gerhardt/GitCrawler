@@ -2,6 +2,7 @@ package rest
 
 import (
 	"gitcrawler/app/impl/facade"
+	"net/http"
 )
 
 type CrawlerController struct {
@@ -12,9 +13,9 @@ func NewCrawlerController() *CrawlerController {
 	return &CrawlerController{facade.NewRepositoryFacade()}
 }
 
-func (c *CrawlerController) GetAllRepositoryFiles(url string) {
+func (c *CrawlerController) GetAllRepositoryFiles(url string) (err error, response http.Response) {
 	if url == "" {
-		return
+		return nil, http.Response{StatusCode: http.StatusNotFound, Body: nil}
 	}
-	c.repositoryFacade.GetAllRepositoryFiles(url)
+	return c.repositoryFacade.GetAllRepositoryFiles(url)
 }
