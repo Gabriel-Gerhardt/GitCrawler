@@ -1,11 +1,11 @@
 package service
 
 import (
-	"net/http"
-	"strings"
+	"os"
+	"os/exec"
 )
 
-const GITHUB_API_URL = "https://api.github.com"
+const BASE_PATH = "../../resources"
 
 type CloneService struct {
 }
@@ -14,16 +14,25 @@ func NewCloneService() *CloneService {
 	return &CloneService{}
 }
 
-func (c *CloneService) CloneRepository(repositoryUrl string) (response *http.Response) {
+func (c *CloneService) CloneRepository(repositoryUrl string) error {
+	path, err := c.createRepositoryDirectory()
+	if err != nil {
+		return err
+	}
+	cmd := exec.Command("git", "clone", repositoryUrl, ".")
+	cmd.Dir = path
+	err = cmd.Run()
+	
+	if err != nil {
+		return err
+	}
+	return nil
+}
 
-	request, err := http.NewRequest("POST", GITHUB_API_URL, strings.NewReader(repositoryUrl))
+func (c *CloneService) createRepositoryDirectory() (string, error) {
+	path, err := os.MkdirTemp(BASE_PATH, "temp")
 	if err != nil {
-		panic(err)
+		return "", err
 	}
-	client := http.Client{}
-	response, err = client.Do(request)
-	if err != nil {
-		return nil
-	}
-	return response
+	return path, nil
 }
