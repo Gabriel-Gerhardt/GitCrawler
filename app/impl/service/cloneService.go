@@ -7,6 +7,6 @@ func NewCloneService() *CloneService {
 	return &CloneService{}
 }
 
-func (c *CloneService) cloneRepository(url string) {
+func (c *CloneService) CloneRepository(url string) {
 
 }

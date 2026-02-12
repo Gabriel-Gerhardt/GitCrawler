@@ -12,3 +12,7 @@ type RepositoryFacade struct {
 func NewRepositoryFacade() *RepositoryFacade {
 	return &RepositoryFacade{service.NewCloneService(), service.NewCrawlerService()}
 }
+
+func (c *RepositoryFacade) GetAllRepositoryFiles(url string) {
+	c.cloneService.CloneRepository(url)
+}
