@@ -38,13 +38,15 @@ func (c *CrawlerService) crawl(dir string, repositoryData *entity.RepositoryData
 			if err != nil {
 				return err
 			}
-			data, _ := io.ReadAll(fileBinary)
-
+			data, err := io.ReadAll(fileBinary)
+			_ = fileBinary.Close()
+			if err != nil {
+				return err
+			}
 			repositoryFile.Data = string(data)
 			repositoryFile.Path = dir + "/" + file.Name()
 
 			repositoryData.Files = append(repositoryData.Files, *repositoryFile)
-
 		}
 	}
 
