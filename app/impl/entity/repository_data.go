@@ -1,6 +1,6 @@
 package entity
 
 type RepositoryData struct {
-	files []RepositoryFile
-	name  string
+	Files []RepositoryFile
+	Name  string
 }

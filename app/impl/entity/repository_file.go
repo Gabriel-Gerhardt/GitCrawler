@@ -1,6 +1,6 @@
 package entity
 
 type RepositoryFile struct {
-	line string
-	path string
+	Data string
+	Path string
 }
