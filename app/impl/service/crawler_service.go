@@ -33,14 +33,12 @@ func (c *CrawlerService) crawl(dir string, repositoryData *entity.RepositoryData
 				return err
 			}
 		} else {
-			fileData, path, err := c.openFile(dir, file)
-			if err != nil {
+			fileData, path, openFileErr := c.openFile(dir, file)
+			if openFileErr != nil {
 				return err
 			}
-			err = c.appendFileData(repositoryData, path, fileData)
-			if err != nil {
-				return err
-			}
+			c.appendFileData(repositoryData, path, fileData)
+
 		}
 	}
 	return nil
