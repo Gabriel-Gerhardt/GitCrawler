@@ -17,14 +17,6 @@ func NewRepositoryFacade() *RepositoryFacade {
 
 func (c *RepositoryFacade) GetAllRepositoryFiles(url string) (err error) {
 	path, err := c.cloneService.CloneRepository(url)
-	if err != nil {
-		return err
-	}
-	data, err := c.crawlerService.CrawlRepository(path)
-	if err != nil {
-		return err
-	}
-	fmt.Println(data)
 
 	defer func(path string) {
 		err := os.RemoveAll(path)
@@ -32,6 +24,16 @@ func (c *RepositoryFacade) GetAllRepositoryFiles(url string) (err error) {
 			return
 		}
 	}(path)
+
+	if err != nil {
+		return err
+	}
+
+	data, err := c.crawlerService.CrawlRepository(path)
+	if err != nil {
+		return err
+	}
+	fmt.Println(data)
 
 	return nil
 }

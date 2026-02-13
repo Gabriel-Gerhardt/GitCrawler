@@ -15,7 +15,7 @@ func NewCrawlerController() *CrawlerController {
 
 func (c *CrawlerController) GetAllRepositoryFiles(url string) (err error, response http.Response) {
 	if url == "" {
-		return nil, http.Response{StatusCode: http.StatusNotFound, Body: nil}
+		return nil, http.Response{StatusCode: http.StatusBadRequest, Body: nil}
 	}
 	return c.repositoryFacade.GetAllRepositoryFiles(url), http.Response{StatusCode: http.StatusOK, Body: nil}
 }
