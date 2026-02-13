@@ -15,28 +15,28 @@ func NewCrawlerService() *CrawlerService {
 
 func (c *CrawlerService) CrawlRepository(path string) (data *entity.RepositoryData, err error) {
 	data = &entity.RepositoryData{}
-	_, err = c.crawl(path, data)
+	err = c.crawl(path, data)
 	if err != nil {
 		return nil, err
 	}
 	return data, nil
 }
-func (c *CrawlerService) crawl(dir string, repositoryData *entity.RepositoryData) (path string, err error) {
+func (c *CrawlerService) crawl(dir string, repositoryData *entity.RepositoryData) (err error) {
 	readDir, err := os.ReadDir(dir)
 	if err != nil {
-		return "", err
+		return err
 	}
 	for _, file := range readDir {
 		if file.IsDir() {
-			_, err := c.crawl(dir+"/"+file.Name(), repositoryData)
+			err := c.crawl(dir+"/"+file.Name(), repositoryData)
 			if err != nil {
-				return "", err
+				return err
 			}
 		} else {
 			repositoryFile := &entity.RepositoryFile{}
-			fileBinary, err := os.OpenFile(dir+"/"+file.Name(), os.O_RDONLY, os.ModePerm)
+			fileBinary, err := os.Open(dir + "/" + file.Name())
 			if err != nil {
-				return "", err
+				return err
 			}
 			data, _ := io.ReadAll(fileBinary)
 
@@ -44,8 +44,9 @@ func (c *CrawlerService) crawl(dir string, repositoryData *entity.RepositoryData
 			repositoryFile.Path = dir + "/" + file.Name()
 
 			repositoryData.Files = append(repositoryData.Files, *repositoryFile)
+
 		}
 	}
 
-	return "", nil
+	return nil
 }
