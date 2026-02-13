@@ -4,6 +4,7 @@ import (
 	"gitcrawler/app/impl/entity"
 	"io"
 	"os"
+	"path/filepath"
 )
 
 type CrawlerService struct {
@@ -23,19 +24,21 @@ func (c *CrawlerService) CrawlRepository(path string) (data *entity.RepositoryDa
 }
 func (c *CrawlerService) crawl(dir string, repositoryData *entity.RepositoryData) (err error) {
 	readDir, err := os.ReadDir(dir)
+
 	if err != nil {
 		return err
 	}
 	for _, file := range readDir {
+		path := filepath.Join(dir, file.Name())
 		if file.IsDir() {
-			err = c.crawl(dir+"/"+file.Name(), repositoryData)
+			err = c.crawl(path, repositoryData)
 			if err != nil {
 				return err
 			}
 		} else {
-			fileData, path, openFileErr := c.openFile(dir, file)
+			fileData, openFileErr := c.openFile(path)
 			if openFileErr != nil {
-				return err
+				return openFileErr
 			}
 			c.appendFileData(repositoryData, path, fileData)
 
@@ -44,21 +47,19 @@ func (c *CrawlerService) crawl(dir string, repositoryData *entity.RepositoryData
 	return nil
 }
 
-func (c *CrawlerService) openFile(dir string, file os.DirEntry) (data string, path string, err error) {
-	path = dir + "/" + file.Name()
+func (c *CrawlerService) openFile(path string) (data string, err error) {
 	fileBinary, err := os.Open(path)
-
 	if err != nil {
-		return "", path, err
+		return "", err
 	}
 	defer fileBinary.Close()
 
 	binaryData, err := io.ReadAll(fileBinary)
 	if err != nil {
-		return "", path, err
+		return "", err
 	}
 	data = string(binaryData)
-	return data, path, nil
+	return data, nil
 }
 
 func (c *CrawlerService) appendFileData(repositoryData *entity.RepositoryData, path string, data string) {
