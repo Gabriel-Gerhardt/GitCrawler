@@ -1,12 +1,9 @@
 package service
 
 import (
-	"net/http"
 	"os"
 	"os/exec"
 )
-
-const BASE_PATH = "../../resources"
 
 type CloneService struct {
 }
@@ -15,23 +12,25 @@ func NewCloneService() *CloneService {
 	return &CloneService{}
 }
 
-func (c *CloneService) CloneRepository(repositoryUrl string) (string, error, http.Response) {
+func (c *CloneService) CloneRepository(repositoryUrl string) (string, error) {
 	path, err := c.createRepositoryDirectory()
 	if err != nil {
-		return "", err, http.Response{StatusCode: http.StatusInternalServerError, Body: nil}
+		return "", err
 	}
 	cmd := exec.Command("git", "clone", repositoryUrl, ".")
 	cmd.Dir = path
 	err = cmd.Run()
 
 	if err != nil {
-		return "", err, http.Response{StatusCode: http.StatusBadRequest, Body: nil}
+		return "", err
 	}
-	return path, nil, http.Response{StatusCode: http.StatusOK, Body: nil}
+	return path, nil
 }
 
 func (c *CloneService) createRepositoryDirectory() (string, error) {
-	path, err := os.MkdirTemp(BASE_PATH, "temp")
+	path, err := os.Getwd()
+	path, err = os.MkdirTemp(path, "temp")
+
 	if err != nil {
 		return "", err
 	}
