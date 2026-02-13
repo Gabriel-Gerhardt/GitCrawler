@@ -19,7 +19,6 @@ func (c *CrawlerService) CrawlRepository(path string) (data *entity.RepositoryDa
 	if err != nil {
 		return nil, err
 	}
-
 	return data, nil
 }
 func (c *CrawlerService) crawl(dir string, repositoryData *entity.RepositoryData) (path string, err error) {

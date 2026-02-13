@@ -1,6 +1,7 @@
 package facade
 
 import (
+	"fmt"
 	"gitcrawler/app/impl/service"
 	"os"
 )
@@ -19,7 +20,11 @@ func (c *RepositoryFacade) GetAllRepositoryFiles(url string) (err error) {
 	if err != nil {
 		return err
 	}
-	//c.crawlerService.CrawlRepository(path)
+	data, err := c.crawlerService.CrawlRepository(path)
+	if err != nil {
+		return err
+	}
+	fmt.Println(data)
 
 	defer func(path string) {
 		err := os.RemoveAll(path)

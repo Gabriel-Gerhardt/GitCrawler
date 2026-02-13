@@ -2,16 +2,16 @@ package main
 
 import (
 	"fmt"
-	"gitcrawler/app/impl/service"
+	"gitcrawler/app/impl/facade"
 )
 
 func main() {
-	c := service.CloneService{}
+	f := facade.RepositoryFacade{}
 	url := "https://github.com/Gabriel-Gerhardt/Webhook-Manager.git"
-	path, err := c.CloneRepository(url)
+	err := f.GetAllRepositoryFiles(url)
 	if err != nil {
 		return
 	}
-	fmt.Println(path + "clone on")
+	fmt.Println("clone on")
 
 }
