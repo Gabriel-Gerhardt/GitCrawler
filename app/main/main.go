@@ -2,16 +2,16 @@ package main
 
 import (
 	"fmt"
-	"gitcrawler/app/impl/facade"
+	"net/http"
 )
 
 func main() {
-	f := facade.RepositoryFacade{}
-	url := "https://github.com/Gabriel-Gerhardt/a.git"
-	err := f.GetAllRepositoryFiles(url)
+	server := http.Server{}
+
+	server.Addr = ":8080"
+	fmt.Println("Running server on " + server.Addr)
+	err := server.ListenAndServe()
 	if err != nil {
 		return
 	}
-	fmt.Println("clone on")
-
 }

@@ -13,9 +13,15 @@ func NewCrawlerController() *CrawlerController {
 	return &CrawlerController{facade.NewRepositoryFacade()}
 }
 
-func (c *CrawlerController) GetAllRepositoryFiles(url string) (err error, response http.Response) {
-	if url == "" {
-		return nil, http.Response{StatusCode: http.StatusBadRequest, Body: nil}
+func (c *CrawlerController) GetAllRepositoryFiles(w http.ResponseWriter, r *http.Request) {
+	if r.Body == nil {
+		http.Error(w, "Url must contain something", http.StatusBadRequest)
 	}
-	return c.repositoryFacade.GetAllRepositoryFiles(url), http.Response{StatusCode: http.StatusOK, Body: nil}
+	err := c.repositoryFacade.GetAllRepositoryFiles("")
+	if err != nil {
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("fuck you"))
+
 }

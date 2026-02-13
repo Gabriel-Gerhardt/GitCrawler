@@ -20,6 +20,9 @@ func (c *CloneService) CloneRepository(repositoryUrl string) (string, error) {
 	cmd := exec.Command("git", "clone", repositoryUrl, ".")
 	cmd.Dir = path
 	err = cmd.Run()
+	if err != nil {
+		return path, err
+	}
 	return path, nil
 }
 

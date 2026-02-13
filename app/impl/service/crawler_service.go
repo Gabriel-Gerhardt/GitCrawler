@@ -49,12 +49,13 @@ func (c *CrawlerService) crawl(dir string, repositoryData *entity.RepositoryData
 
 func (c *CrawlerService) openFile(path string) (data string, err error) {
 	fileBinary, err := os.Open(path)
+
 	if err != nil {
 		return "", err
 	}
 	defer fileBinary.Close()
-
 	binaryData, err := io.ReadAll(fileBinary)
+
 	if err != nil {
 		return "", err
 	}
