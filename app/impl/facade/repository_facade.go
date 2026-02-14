@@ -2,13 +2,14 @@ package facade
 
 import (
 	"fmt"
+	"gitcrawler/app/impl/contract"
 	"gitcrawler/app/impl/service"
 	"os"
 )
 
 type RepositoryFacade struct {
-	cloneService   *service.CloneService
-	crawlerService *service.CrawlerService
+	cloneService   contract.CloneServiceContract
+	crawlerService contract.CrawlerServiceContract
 }
 
 func NewRepositoryFacade() *RepositoryFacade {
