@@ -23,6 +23,7 @@ func (c *CrawlerController) GetAllRepositoryFiles(w http.ResponseWriter, r *http
 	if err != nil {
 		return
 	}
+
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("The csv is ready"))
 

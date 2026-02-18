@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"gitcrawler/app/impl/entity"
 	"os"
+	"strings"
 )
 
 type ConverterCsv struct{}
@@ -23,9 +24,10 @@ func (c *ConverterCsv) Convert(data *entity.RepositoryData) (err error) {
 	writer.Write(headers)
 
 	for i := 0; i < len(data.Files); i++ {
+		trimmedData := strings.ReplaceAll(data.Files[i].Data, "\n", "\\n")
 		record := []string{
 			data.Name,
-			data.Files[i].Data,
+			trimmedData,
 			data.Files[i].Path,
 		}
 		err = writer.Write(record)
