@@ -7,5 +7,5 @@ import (
 
 func GetHandlers() {
 	crawlerController := rest.NewCrawlerController()
-	http.Handle("/getAll", http.HandlerFunc(crawlerController.GetAllRepositoryFiles))
+	http.Handle("/getAllRepoData", http.HandlerFunc(crawlerController.GetAllRepositoryFiles))
 }

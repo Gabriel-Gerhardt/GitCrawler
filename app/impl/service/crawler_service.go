@@ -14,8 +14,9 @@ func NewCrawlerService() *CrawlerService {
 	return &CrawlerService{}
 }
 
-func (c *CrawlerService) CrawlRepository(path string) (data *entity.RepositoryData, err error) {
+func (c *CrawlerService) CrawlRepository(path string, repoName string) (data *entity.RepositoryData, err error) {
 	data = &entity.RepositoryData{}
+	data.Name = repoName
 	err = c.crawl(path, data)
 	if err != nil {
 		return nil, err
@@ -41,7 +42,6 @@ func (c *CrawlerService) crawl(dir string, repositoryData *entity.RepositoryData
 				return openFileErr
 			}
 			c.appendFileData(repositoryData, path, fileData)
-
 		}
 	}
 	return nil

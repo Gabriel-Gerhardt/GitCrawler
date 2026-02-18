@@ -4,7 +4,10 @@ import (
 	"fmt"
 	"gitcrawler/app/impl/contract"
 	"gitcrawler/app/impl/service"
+	"gitcrawler/app/impl/strategy"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 type RepositoryFacade struct {
@@ -25,12 +28,26 @@ func (c *RepositoryFacade) GetAllRepositoryFiles(url string) (err error) {
 	if err != nil {
 		return err
 	}
-
-	data, err := c.crawlerService.CrawlRepository(path)
+	repoName := strings.TrimSuffix(filepath.Base(url), ".git")
+	fmt.Println(repoName)
+	data, err := c.crawlerService.CrawlRepository(path, repoName)
 	if err != nil {
 		return err
 	}
-	fmt.Println(data)
+	converter, err := c.converterStrategy()
 
+	if err != nil {
+		return err
+	}
+
+	err = converter.Convert(data)
+
+	if err != nil {
+		return err
+	}
 	return nil
+}
+
+func (c *RepositoryFacade) converterStrategy() (converter strategy.DataConverter, err error) {
+	return strategy.NewConverterCsv(), nil
 }
