@@ -1,7 +1,11 @@
 package register
 
-import "net/http"
+import (
+	"gitcrawler/app/impl/rest"
+	"net/http"
+)
 
-func RegisterHandler(w http.ResponseWriter, r *http.Request) {
-	http.Handle("/getAll", http.HandlerFunc(func(GetAll) {}))
+func GetHandlers() {
+	crawlerController := rest.NewCrawlerController()
+	http.Handle("/getAll", http.HandlerFunc(crawlerController.GetAllRepositoryFiles))
 }

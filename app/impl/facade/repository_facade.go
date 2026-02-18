@@ -17,7 +17,6 @@ func NewRepositoryFacade() *RepositoryFacade {
 
 func (c *RepositoryFacade) GetAllRepositoryFiles(url string) (err error) {
 	path, err := c.cloneService.CloneRepository(url)
-
 	if path != "" {
 		defer os.RemoveAll(path)
 	}
