@@ -5,18 +5,22 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type CrawlerService struct {
+	extensionList []string
+	dirList       []string
 }
 
 func NewCrawlerService() *CrawlerService {
 	return &CrawlerService{}
 }
 
-func (c *CrawlerService) CrawlRepository(path string, repoName string) (data *entity.RepositoryData, err error) {
+func (c *CrawlerService) CrawlRepository(path string, repoName string, validExtensions []string) (data *entity.RepositoryData, err error) {
 	data = &entity.RepositoryData{}
 	data.Name = repoName
+	c.extensionList = append(c.extensionList, validExtensions...)
 	err = c.crawl(path, data)
 	if err != nil {
 		return nil, err
@@ -37,11 +41,13 @@ func (c *CrawlerService) crawl(dir string, repositoryData *entity.RepositoryData
 				return err
 			}
 		} else {
-			fileData, openFileErr := c.openFile(path)
-			if openFileErr != nil {
-				return openFileErr
+			if c.isFileValid(file) {
+				fileData, openFileErr := c.openFile(path)
+				if openFileErr != nil {
+					return openFileErr
+				}
+				c.appendFileData(repositoryData, path, fileData)
 			}
-			c.appendFileData(repositoryData, path, fileData)
 		}
 	}
 	return nil
@@ -67,5 +73,15 @@ func (c *CrawlerService) appendFileData(repositoryData *entity.RepositoryData, p
 	repositoryFile := &entity.RepositoryFile{}
 	repositoryFile.Data = data
 	repositoryFile.Path = path
-	repositoryData.Files = append(repositoryData.Files, *repositoryFile)
+	repositoryData.Files = append(repositoryData.Files, repositoryFile)
+}
+func (c *CrawlerService) isFileValid(file os.DirEntry) bool {
+	fileExtension := strings.ToLower(filepath.Ext(file.Name()))
+	for _, extension := range c.extensionList {
+		if fileExtension == extension {
+			return true
+		}
+	}
+	return false
+
 }

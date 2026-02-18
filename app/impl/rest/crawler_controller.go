@@ -18,7 +18,7 @@ func (c *CrawlerController) GetAllRepositoryFiles(w http.ResponseWriter, r *http
 		http.Error(w, "Url must contain something", http.StatusBadRequest)
 	}
 
-	err := c.repositoryFacade.GetAllRepositoryFiles("https://github.com/Gabriel-Gerhardt/Webhook-Manager.git")
+	err := c.repositoryFacade.GetAllRepositoryFiles("https://github.com/Gabriel-Gerhardt/GitCrawler.git")
 
 	if err != nil {
 		return

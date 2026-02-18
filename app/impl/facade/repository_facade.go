@@ -1,7 +1,6 @@
 package facade
 
 import (
-	"fmt"
 	"gitcrawler/app/impl/contract"
 	"gitcrawler/app/impl/service"
 	"gitcrawler/app/impl/strategy"
@@ -29,8 +28,12 @@ func (c *RepositoryFacade) GetAllRepositoryFiles(url string) (err error) {
 		return err
 	}
 	repoName := strings.TrimSuffix(filepath.Base(url), ".git")
-	fmt.Println(repoName)
-	data, err := c.crawlerService.CrawlRepository(path, repoName)
+
+	extensions := []string{
+		".java",
+		".go",
+	}
+	data, err := c.crawlerService.CrawlRepository(path, repoName, extensions)
 	if err != nil {
 		return err
 	}
