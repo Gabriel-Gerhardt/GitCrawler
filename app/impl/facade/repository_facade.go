@@ -21,6 +21,10 @@ func NewRepositoryFacade() *RepositoryFacade {
 }
 
 func (c *RepositoryFacade) GetAllRepositoryFiles(url string, extensions []string, dirs []string) (err error) {
+
+	if !c.isUrlValid(url) {
+		return err
+	}
 	data, err := c.createAndCrawl(url, extensions, dirs)
 
 	converter, err := c.converterStrategy()
@@ -83,6 +87,9 @@ func (c *RepositoryFacade) GenerateBusinessResume(url string) (err error) {
 		"repository",
 		"event",
 	}
+	if !c.isUrlValid(url) {
+		return err
+	}
 	data, err := c.createAndCrawl(url, extensions, dirs)
 	if err != nil {
 		return err
@@ -111,4 +118,8 @@ func (c *RepositoryFacade) createAndCrawl(url string, extensions []string, dirs 
 
 func (c *RepositoryFacade) converterStrategy() (converter strategy.DataConverter, err error) {
 	return strategy.NewConverterCsv(), nil
+}
+
+func (c *RepositoryFacade) isUrlValid(url string) bool {
+	return true
 }
