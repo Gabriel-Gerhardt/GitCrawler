@@ -1,7 +1,6 @@
 package facade
 
 import (
-	"fmt"
 	"gitcrawler/app/impl/contract"
 	"gitcrawler/app/impl/entity"
 	"gitcrawler/app/impl/service"
@@ -12,12 +11,13 @@ import (
 )
 
 type RepositoryFacade struct {
-	cloneService   contract.CloneServiceContract
-	crawlerService contract.CrawlerServiceContract
+	cloneService           contract.CloneServiceContract
+	crawlerService         contract.CrawlerServiceContract
+	resumeGeneratorService contract.ResumeGeneratorServiceContract
 }
 
 func NewRepositoryFacade() *RepositoryFacade {
-	return &RepositoryFacade{service.NewCloneService(), service.NewCrawlerService()}
+	return &RepositoryFacade{service.NewCloneService(), service.NewCrawlerService(), service.NewResumeGenerateService()}
 }
 
 func (c *RepositoryFacade) GetAllRepositoryFiles(url string, extensions []string, dirs []string) (err error) {
@@ -87,7 +87,7 @@ func (c *RepositoryFacade) GenerateBusinessResume(url string) (err error) {
 	if err != nil {
 		return err
 	}
-	fmt.Println(data)
+	c.resumeGeneratorService.GenerateBusinessResume(data.String())
 	return nil
 }
 

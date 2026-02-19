@@ -18,7 +18,7 @@ func (c *CrawlerController) GetAllRepositoryFiles(w http.ResponseWriter, r *http
 		http.Error(w, "Url must contain something", http.StatusBadRequest)
 	}
 
-	err := c.repositoryFacade.GetAllRepositoryFiles("https://github.com/Gabriel-Gerhardt/GitCrawler.git", nil, nil)
+	err := c.repositoryFacade.GetAllRepositoryFiles("", nil, nil)
 
 	if err != nil {
 		return
@@ -29,7 +29,7 @@ func (c *CrawlerController) GetAllRepositoryFiles(w http.ResponseWriter, r *http
 
 }
 
-func (c *CrawlerController) GetResumeRepo(w http.ResponseWriter, r *http.Request) {
+func (c *CrawlerController) GetBusinessRepoResume(w http.ResponseWriter, r *http.Request) {
 	if r.Body == nil {
 		http.Error(w, "Url must contain something", http.StatusBadRequest)
 	}
