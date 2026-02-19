@@ -18,7 +18,7 @@ func (c *CrawlerController) GetAllRepositoryFiles(w http.ResponseWriter, r *http
 		http.Error(w, "Url must contain something", http.StatusBadRequest)
 	}
 
-	err := c.repositoryFacade.GetAllRepositoryFiles("https://github.com/Gabriel-Gerhardt/GitCrawler.git")
+	err := c.repositoryFacade.GetAllRepositoryFiles("https://github.com/Gabriel-Gerhardt/GitCrawler.git", nil, nil)
 
 	if err != nil {
 		return
@@ -27,4 +27,18 @@ func (c *CrawlerController) GetAllRepositoryFiles(w http.ResponseWriter, r *http
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("The csv is ready"))
 
+}
+
+func (c *CrawlerController) GetResumeRepo(w http.ResponseWriter, r *http.Request) {
+	if r.Body == nil {
+		http.Error(w, "Url must contain something", http.StatusBadRequest)
+	}
+	err := c.repositoryFacade.GenerateBusinessResume("https://github.com/Gabriel-Gerhardt/GitCrawler.git")
+
+	if err != nil {
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("The resume is ready"))
 }
