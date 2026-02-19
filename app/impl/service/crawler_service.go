@@ -17,17 +17,19 @@ func NewCrawlerService() *CrawlerService {
 	return &CrawlerService{}
 }
 
-func (c *CrawlerService) CrawlRepository(path string, repoName string, validExtensions []string) (data *entity.RepositoryData, err error) {
+func (c *CrawlerService) CrawlRepository(path string, repoName string, validExtensions []string, validDirs []string) (data *entity.RepositoryData, err error) {
 	data = &entity.RepositoryData{}
 	data.Name = repoName
 	c.extensionList = append(c.extensionList, validExtensions...)
-	err = c.crawl(path, data)
+	c.dirList = append(c.dirList, validDirs...)
+
+	err = c.crawl(path, data, true)
 	if err != nil {
 		return nil, err
 	}
 	return data, nil
 }
-func (c *CrawlerService) crawl(dir string, repositoryData *entity.RepositoryData) (err error) {
+func (c *CrawlerService) crawl(dir string, repositoryData *entity.RepositoryData, validDir bool) (err error) {
 	readDir, err := os.ReadDir(dir)
 
 	if err != nil {
@@ -35,13 +37,14 @@ func (c *CrawlerService) crawl(dir string, repositoryData *entity.RepositoryData
 	}
 	for _, file := range readDir {
 		path := filepath.Join(dir, file.Name())
+		isDirValid := c.isDirValid(file)
 		if file.IsDir() {
-			err = c.crawl(path, repositoryData)
+			err = c.crawl(path, repositoryData, isDirValid)
 			if err != nil {
 				return err
 			}
 		} else {
-			if c.isFileValid(file) {
+			if c.isFileValid(file) && validDir {
 				fileData, openFileErr := c.openFile(path)
 				if openFileErr != nil {
 					return openFileErr
@@ -83,5 +86,13 @@ func (c *CrawlerService) isFileValid(file os.DirEntry) bool {
 		}
 	}
 	return false
-
+}
+func (c *CrawlerService) isDirValid(file os.DirEntry) bool {
+	dirName := strings.ToLower(file.Name())
+	for _, dir := range c.dirList {
+		if dir == dirName {
+			return true
+		}
+	}
+	return false
 }

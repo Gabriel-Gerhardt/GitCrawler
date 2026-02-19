@@ -33,7 +33,11 @@ func (c *RepositoryFacade) GetAllRepositoryFiles(url string) (err error) {
 		".java",
 		".go",
 	}
-	data, err := c.crawlerService.CrawlRepository(path, repoName, extensions)
+	dirs := []string{
+		"rest",
+		"facade",
+	}
+	data, err := c.crawlerService.CrawlRepository(path, repoName, extensions, dirs)
 	if err != nil {
 		return err
 	}
