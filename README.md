@@ -1,10 +1,13 @@
 ## GitCrawler
 
-Rest API that trims repoitories from github and return only the necessary data
+Rest API that trims repositories from github and return only the necessary data or resumes of the repositories for data ingestion
 
 ## How It Works
 
-<Specified project description>
+When a request is received, the API first clones the target GitHub repository locally.  
+For file search requests, it scans the cloned repository to identify files matching the requested extensions or packages. The results can then be formatted and returned as CSV, HTML, or another suitable format.  
+
+For business model summary requests, the API extracts relevant information from the repository, such as the README, documentation, or main code files, and sends it to the AI service. The generated summary is then returned directly to the user.
 
 ## Diagram
 
@@ -15,8 +18,13 @@ Rest API that trims repoitories from github and return only the necessary data
 Golang
 
 ## Use Cases
+### 1. Find Files in GitHub Repos
+- **Input:** GitHub URLs + file extensions/packages  
+- **Output:** List of matching files (path, repo, type)  
 
-Send github repos and files extension or packages wanted -> return all files found that matches with the configuration
+### 2. Generate Business Model Summary via AI
+- **Input:** GitHub URL + API_KEY  
+- **Output:** Business model summary
 
 ## Set-up
 
