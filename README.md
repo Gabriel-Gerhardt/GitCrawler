@@ -36,7 +36,10 @@ docker compose up
 
 Access:
 
-    <Api routes or swagger>
+    <
+    post -> localhost:8080/getRepoData
+    get -> localhost:8080/getBusinessRepoResume/{repositoryUrl}
+    >
 
 ## Contact
 [LinkedIn](https://www.linkedin.com/in/gabriel-gerhardt-0a8b852b9/)
