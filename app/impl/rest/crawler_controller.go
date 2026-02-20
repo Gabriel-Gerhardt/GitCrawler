@@ -21,7 +21,7 @@ func (c *CrawlerController) GetAllRepositoryFiles(w http.ResponseWriter, r *http
 	err := c.repositoryFacade.GetAllRepositoryFiles("", nil, nil)
 
 	if err != nil {
-		return
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -32,11 +32,12 @@ func (c *CrawlerController) GetAllRepositoryFiles(w http.ResponseWriter, r *http
 func (c *CrawlerController) GetBusinessRepoResume(w http.ResponseWriter, r *http.Request) {
 	if r.Body == nil {
 		http.Error(w, "Url must contain something", http.StatusBadRequest)
-	}
-	err := c.repositoryFacade.GenerateBusinessResume("https://github.com/Gabriel-Gerhardt/GitCrawler.git")
-
-	if err != nil {
 		return
+	}
+
+	err := c.repositoryFacade.GenerateBusinessResume("https://github.com/Gabriel-Gerhardt/GitCrawler.git")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
 	w.WriteHeader(http.StatusOK)

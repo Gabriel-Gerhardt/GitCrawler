@@ -1,6 +1,7 @@
 package facade
 
 import (
+	"errors"
 	"gitcrawler/app/impl/contract"
 	"gitcrawler/app/impl/entity"
 	"gitcrawler/app/impl/service"
@@ -22,7 +23,8 @@ func NewRepositoryFacade() *RepositoryFacade {
 
 func (c *RepositoryFacade) GetAllRepositoryFiles(url string, extensions []string, dirs []string) (err error) {
 
-	if !c.isUrlValid(url) {
+	err = c.isUrlValid(url)
+	if err != nil {
 		return err
 	}
 	data, err := c.createAndCrawl(url, extensions, dirs)
@@ -87,9 +89,11 @@ func (c *RepositoryFacade) GenerateBusinessResume(url string) (err error) {
 		"repository",
 		"event",
 	}
-	if !c.isUrlValid(url) {
+	err = c.isUrlValid(url)
+	if err != nil {
 		return err
 	}
+
 	data, err := c.createAndCrawl(url, extensions, dirs)
 	if err != nil {
 		return err
@@ -123,6 +127,9 @@ func (c *RepositoryFacade) converterStrategy() (converter strategy.DataConverter
 	return strategy.NewConverterCsv(), nil
 }
 
-func (c *RepositoryFacade) isUrlValid(url string) bool {
-	return true
+func (c *RepositoryFacade) isUrlValid(url string) error {
+	if !strings.Contains(url, ".git") {
+		return errors.New("repository url must contain .git")
+	}
+	return nil
 }

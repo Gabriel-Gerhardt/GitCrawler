@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"gitcrawler/app/impl/entity"
 	"io"
 	"os"
@@ -20,8 +21,14 @@ func NewCrawlerService() *CrawlerService {
 func (c *CrawlerService) CrawlRepository(path string, repoName string, validExtensions []string, validDirs []string) (data *entity.RepositoryData, err error) {
 	data = &entity.RepositoryData{}
 	data.Name = repoName
-	c.extensionList = append(c.extensionList, validExtensions...)
-	c.dirList = append(c.dirList, validDirs...)
+	if validExtensions == nil {
+		return nil, errors.New("no valid extensions provided")
+	}
+	if validDirs == nil {
+		return nil, errors.New("no valid directories provided")
+	}
+	c.extensionList = validExtensions
+	c.dirList = validDirs
 
 	err = c.crawl(path, data, true)
 	if err != nil {
@@ -60,13 +67,13 @@ func (c *CrawlerService) openFile(path string) (data string, err error) {
 	fileBinary, err := os.Open(path)
 
 	if err != nil {
-		return "", err
+		return "", errors.New("could not open file")
 	}
 	defer fileBinary.Close()
 	binaryData, err := io.ReadAll(fileBinary)
 
 	if err != nil {
-		return "", err
+		return "", errors.New("could not read file")
 	}
 	data = string(binaryData)
 	return data, nil
