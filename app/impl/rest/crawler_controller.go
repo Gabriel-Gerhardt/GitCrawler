@@ -3,6 +3,7 @@ package rest
 import (
 	"encoding/json"
 	"gitcrawler/app/impl/dto/request"
+	"gitcrawler/app/impl/dto/response"
 	"gitcrawler/app/impl/facade"
 	"net/http"
 )
@@ -38,18 +39,22 @@ func (c *CrawlerController) GetRepositoryFiles(w http.ResponseWriter, r *http.Re
 }
 
 func (c *CrawlerController) GetBusinessRepoResume(w http.ResponseWriter, r *http.Request) {
+	var resp response.ResumeResponse
 	url := r.URL.Query().Get("url")
 	if url == "" {
 		http.Error(w, "Url must contain something", http.StatusBadRequest)
 		return
 	}
 
-	err := c.repositoryFacade.GenerateBusinessResume(url)
+	aiResponse, err := c.repositoryFacade.GenerateBusinessResume(url)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	resp.AiResponse = aiResponse
+
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("The resume is ready"))
+	w.Write([]byte(resp.AiResponse))
 }

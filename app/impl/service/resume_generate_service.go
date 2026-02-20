@@ -8,8 +8,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-
-	_ "github.com/joho/godotenv/autoload"
 )
 
 const openRouterUrl = "https://openrouter.ai/api/v1/chat/completions"
@@ -46,7 +44,6 @@ func (s *ResumeGenerateService) GenerateBusinessResume(data string) (text string
 	if err != nil {
 		return "", err
 	}
-	fmt.Println(aiResponse)
 	return aiResponse, nil
 }
 
@@ -76,7 +73,7 @@ func escapeJSON(str string) string {
 	return string(b)
 }
 
-func (s *ResumeGenerateService) getResponse(respBody []byte) (choice string, err error) {
+func (s *ResumeGenerateService) getResponse(respBody []byte) (aiResponse string, err error) {
 	var aiResp struct {
 		Choices []struct {
 			Message struct {

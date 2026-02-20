@@ -42,7 +42,7 @@ func (c *RepositoryFacade) GetRepositoryFiles(url string, extensions []string, d
 	return nil
 }
 
-func (c *RepositoryFacade) GenerateBusinessResume(url string) (err error) {
+func (c *RepositoryFacade) GenerateBusinessResume(url string) (aiResponse string, err error) {
 	extensions := []string{
 		".java",
 		".kt",
@@ -90,21 +90,21 @@ func (c *RepositoryFacade) GenerateBusinessResume(url string) (err error) {
 	}
 	err = c.isUrlValid(url)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	data, err := c.createAndCrawl(url, extensions, dirs)
 	if err != nil {
-		return err
+		return "", err
 	}
 	if data == nil {
-		return errors.New("repository business data is empty")
+		return "", errors.New("repository business data is empty")
 	}
-	_, err = c.resumeGeneratorService.GenerateBusinessResume(data.String())
+	aiResponse, err = c.resumeGeneratorService.GenerateBusinessResume(data.String())
 	if err != nil {
-		return err
+		return "", err
 	}
-	return nil
+	return aiResponse, nil
 }
 
 func (c *RepositoryFacade) createAndCrawl(url string, extensions []string, dirs []string) (data *entity.RepositoryData, err error) {
