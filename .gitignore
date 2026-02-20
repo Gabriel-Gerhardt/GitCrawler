@@ -1,2 +1,5 @@
 .idea
-app/.env
+.env
+go_build_
+app/go_build_gitcrawler_app
+app/go_build_gitcrawler_app_main
