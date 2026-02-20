@@ -16,12 +16,14 @@ func NewCrawlerController() *CrawlerController {
 func (c *CrawlerController) GetAllRepositoryFiles(w http.ResponseWriter, r *http.Request) {
 	if r.Body == nil {
 		http.Error(w, "Url must contain something", http.StatusBadRequest)
+		return
 	}
 
 	err := c.repositoryFacade.GetAllRepositoryFiles("", nil, nil)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -38,6 +40,7 @@ func (c *CrawlerController) GetBusinessRepoResume(w http.ResponseWriter, r *http
 	err := c.repositoryFacade.GenerateBusinessResume("https://github.com/Gabriel-Gerhardt/GitCrawler.git")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)

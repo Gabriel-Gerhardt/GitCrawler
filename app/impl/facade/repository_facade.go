@@ -98,6 +98,9 @@ func (c *RepositoryFacade) GenerateBusinessResume(url string) (err error) {
 	if err != nil {
 		return err
 	}
+	if data == nil {
+		return errors.New("repository business data is empty")
+	}
 	_, err = c.resumeGeneratorService.GenerateBusinessResume(data.String())
 	if err != nil {
 		return err
