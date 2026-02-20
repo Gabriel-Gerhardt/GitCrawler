@@ -36,7 +36,6 @@ docker compose up
 
 Access:
 
-    <
     localhost:8080/getRepoData:
     example: curl -X POST http://localhost:8080/getRepoData \
     -H "Content-Type: application/json" \
@@ -49,7 +48,6 @@ Access:
 
     get -> localhost:8080/getBusinessRepoResume/{repositoryUrl}
     example: curl "localhost:8080/getBusinessRepoResume?url=https://github.com/Gabriel-Gerhardt/GitCrawler.git"
-    >
 
 ## Contact
 [LinkedIn](https://www.linkedin.com/in/gabriel-gerhardt-0a8b852b9/)
