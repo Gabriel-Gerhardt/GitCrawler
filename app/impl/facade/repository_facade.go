@@ -94,7 +94,10 @@ func (c *RepositoryFacade) GenerateBusinessResume(url string) (err error) {
 	if err != nil {
 		return err
 	}
-	c.resumeGeneratorService.GenerateBusinessResume(data.String())
+	_, err = c.resumeGeneratorService.GenerateBusinessResume(data.String())
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
