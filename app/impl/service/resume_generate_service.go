@@ -8,6 +8,8 @@ import (
 	"io"
 	"net/http"
 	"os"
+
+	_ "github.com/joho/godotenv/autoload"
 )
 
 const openRouterUrl = "https://openrouter.ai/api/v1/chat/completions"
@@ -21,7 +23,9 @@ func NewResumeGenerateService() *ResumeGenerateService {
 }
 
 func (s *ResumeGenerateService) GenerateBusinessResume(data string) (text string, err error) {
-
+	if s.key == "" {
+		return "", errors.New("API_KEY not set")
+	}
 	request, err := s.buildRequest(data)
 	if err != nil {
 		return "", err
