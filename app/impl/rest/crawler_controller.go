@@ -1,6 +1,8 @@
 package rest
 
 import (
+	"encoding/json"
+	"gitcrawler/app/impl/dto/request"
 	"gitcrawler/app/impl/facade"
 	"net/http"
 )
@@ -13,13 +15,17 @@ func NewCrawlerController() *CrawlerController {
 	return &CrawlerController{facade.NewRepositoryFacade()}
 }
 
-func (c *CrawlerController) GetAllRepositoryFiles(w http.ResponseWriter, r *http.Request) {
-	if r.Body == nil {
+func (c *CrawlerController) GetRepositoryFiles(w http.ResponseWriter, r *http.Request) {
+	var req request.RepositoryFilesRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+	if req.Url == "" {
 		http.Error(w, "Url must contain something", http.StatusBadRequest)
 		return
 	}
-
-	err := c.repositoryFacade.GetAllRepositoryFiles("", nil, nil)
+	err := c.repositoryFacade.GetRepositoryFiles(req.Url, req.Extensions, req.Dirs, req.Option)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -32,12 +38,13 @@ func (c *CrawlerController) GetAllRepositoryFiles(w http.ResponseWriter, r *http
 }
 
 func (c *CrawlerController) GetBusinessRepoResume(w http.ResponseWriter, r *http.Request) {
-	if r.Body == nil {
+	url := r.URL.Query().Get("url")
+	if url == "" {
 		http.Error(w, "Url must contain something", http.StatusBadRequest)
 		return
 	}
 
-	err := c.repositoryFacade.GenerateBusinessResume("https://github.com/Gabriel-Gerhardt/GitCrawler.git")
+	err := c.repositoryFacade.GenerateBusinessResume(url)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

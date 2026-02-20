@@ -4,6 +4,7 @@ import (
 	"errors"
 	"gitcrawler/app/impl/contract"
 	"gitcrawler/app/impl/entity"
+	"gitcrawler/app/impl/enum"
 	"gitcrawler/app/impl/service"
 	"gitcrawler/app/impl/strategy"
 	"os"
@@ -21,20 +22,18 @@ func NewRepositoryFacade() *RepositoryFacade {
 	return &RepositoryFacade{service.NewCloneService(), service.NewCrawlerService(), service.NewResumeGenerateService()}
 }
 
-func (c *RepositoryFacade) GetAllRepositoryFiles(url string, extensions []string, dirs []string) (err error) {
-
+func (c *RepositoryFacade) GetRepositoryFiles(url string, extensions []string, dirs []string, option enum.ConversionOption) (err error) {
 	err = c.isUrlValid(url)
 	if err != nil {
 		return err
 	}
 	data, err := c.createAndCrawl(url, extensions, dirs)
 
-	converter, err := c.converterStrategy()
+	converter, err := c.converterStrategy(option)
 
 	if err != nil {
 		return err
 	}
-
 	err = converter.Convert(data)
 
 	if err != nil {
@@ -126,8 +125,13 @@ func (c *RepositoryFacade) createAndCrawl(url string, extensions []string, dirs 
 	return data, nil
 }
 
-func (c *RepositoryFacade) converterStrategy() (converter strategy.DataConverter, err error) {
-	return strategy.NewConverterCsv(), nil
+func (c *RepositoryFacade) converterStrategy(option enum.ConversionOption) (converter strategy.DataConverter, err error) {
+	switch option {
+	case "csv":
+		return strategy.NewConverterCsv(), nil
+	default:
+		return nil, errors.New("unknown conversion option")
+	}
 }
 
 func (c *RepositoryFacade) isUrlValid(url string) error {
