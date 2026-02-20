@@ -2,6 +2,8 @@ package service
 
 import (
 	"bytes"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -18,27 +20,30 @@ func NewResumeGenerateService() *ResumeGenerateService {
 	return &ResumeGenerateService{key: os.Getenv("API_KEY")}
 }
 
-func (s *ResumeGenerateService) GenerateBusinessResume(data string) (text []byte, err error) {
+func (s *ResumeGenerateService) GenerateBusinessResume(data string) (text string, err error) {
 
 	request, err := s.buildRequest(data)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	client := &http.Client{}
 	resp, err := client.Do(request)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println(err)
-		return nil, err
+		return "", errors.New("could not read response body of AI requisition")
 	}
 	defer resp.Body.Close()
 
-	fmt.Println(string(respBody))
-	
-	return respBody, nil
+	aiResponse, err := s.getResponse(respBody)
+	if err != nil {
+		return "", err
+	}
+	fmt.Println(aiResponse)
+	return aiResponse, nil
 }
 
 func (s *ResumeGenerateService) buildRequest(data string) (*http.Request, error) {
@@ -52,9 +57,10 @@ func (s *ResumeGenerateService) buildRequest(data string) (*http.Request, error)
 	request, err := http.NewRequest("POST", openRouterUrl, bytes.NewBuffer(body))
 	if err != nil {
 		fmt.Println(err)
-		return nil, err
+		return nil, errors.New("unable to mount request")
 	}
-	request.Header.Set("Authorization: Bearer", s.key)
+	request.Header.Set("Authorization", "Bearer "+s.key)
+
 	return request, nil
 }
 
@@ -64,4 +70,24 @@ func escapeJSON(str string) string {
 	b = bytes.ReplaceAll(b, []byte(`"`), []byte(`\"`))
 	b = bytes.ReplaceAll(b, []byte("\n"), []byte(`\n`))
 	return string(b)
+}
+
+func (s *ResumeGenerateService) getResponse(respBody []byte) (choice string, err error) {
+	var aiResp struct {
+		Choices []struct {
+			Message struct {
+				Content string `json:"content"`
+			} `json:"message"`
+		} `json:"choices"`
+	}
+
+	if err = json.Unmarshal(respBody, &aiResp); err != nil {
+		return "", errors.New("could not parse AI response JSON")
+	}
+
+	if len(aiResp.Choices) == 0 {
+		return "", errors.New("AI has no response")
+	}
+
+	return aiResp.Choices[0].Message.Content, nil
 }
