@@ -2,24 +2,24 @@ package facade
 
 import (
 	"errors"
-	"gitcrawler/app/impl/contract"
-	"gitcrawler/app/impl/entity"
-	"gitcrawler/app/impl/enum"
-	"gitcrawler/app/impl/service"
-	"gitcrawler/app/impl/strategy"
+	contract2 "gitcrawler/app/impl/core/contract"
+	"gitcrawler/app/impl/core/entity"
+	"gitcrawler/app/impl/core/enum"
+	service2 "gitcrawler/app/impl/core/service"
+	strategy2 "gitcrawler/app/impl/core/strategy"
 	"os"
 	"path/filepath"
 	"strings"
 )
 
 type RepositoryFacade struct {
-	cloneService           contract.CloneServiceContract
-	crawlerService         contract.CrawlerServiceContract
-	resumeGeneratorService contract.ResumeGeneratorServiceContract
+	cloneService           contract2.CloneServiceContract
+	crawlerService         contract2.CrawlerServiceContract
+	resumeGeneratorService contract2.ResumeGeneratorServiceContract
 }
 
 func NewRepositoryFacade() *RepositoryFacade {
-	return &RepositoryFacade{service.NewCloneService(), service.NewCrawlerService(), service.NewResumeGenerateService()}
+	return &RepositoryFacade{service2.NewCloneService(), service2.NewCrawlerService(), service2.NewResumeGenerateService()}
 }
 
 func (c *RepositoryFacade) GetRepositoryFiles(url string, extensions []string, dirs []string, option enum.ConversionOption) (err error) {
@@ -67,6 +67,7 @@ func (c *RepositoryFacade) GenerateBusinessResume(url string) (aiResponse string
 		".exs",
 		".dart",
 		".swift",
+		".md",
 	}
 
 	dirs := []string{
@@ -100,6 +101,9 @@ func (c *RepositoryFacade) GenerateBusinessResume(url string) (aiResponse string
 	if data == nil {
 		return "", errors.New("repository business data is empty")
 	}
+	if len(data.Files) < 5 {
+		return "", errors.New("repository business context is too small")
+	}
 	aiResponse, err = c.resumeGeneratorService.GenerateBusinessResume(data.String())
 	if err != nil {
 		return "", err
@@ -125,10 +129,10 @@ func (c *RepositoryFacade) createAndCrawl(url string, extensions []string, dirs 
 	return data, nil
 }
 
-func (c *RepositoryFacade) converterStrategy(option enum.ConversionOption) (converter strategy.DataConverter, err error) {
+func (c *RepositoryFacade) converterStrategy(option enum.ConversionOption) (converter strategy2.DataConverter, err error) {
 	switch option {
-	case "csv":
-		return strategy.NewConverterCsv(), nil
+	case enum.Csv:
+		return strategy2.NewConverterCsv(), nil
 	default:
 		return nil, errors.New("unknown conversion option")
 	}

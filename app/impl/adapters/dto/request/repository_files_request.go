@@ -1,6 +1,8 @@
 package request
 
-import "gitcrawler/app/impl/enum"
+import (
+	"gitcrawler/app/impl/core/enum"
+)
 
 type RepositoryFilesRequest struct {
 	Url        string                `json:"url"`

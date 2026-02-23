@@ -2,7 +2,7 @@ package strategy
 
 import (
 	"encoding/csv"
-	"gitcrawler/app/impl/entity"
+	"gitcrawler/app/impl/core/entity"
 	"os"
 	"strings"
 )

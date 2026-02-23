@@ -1,7 +1,7 @@
 package register
 
 import (
-	"gitcrawler/app/impl/rest"
+	"gitcrawler/app/impl/external/rest"
 	"net/http"
 )
 

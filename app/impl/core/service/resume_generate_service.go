@@ -49,7 +49,6 @@ func (s *ResumeGenerateService) GenerateBusinessResume(data string) (text string
 
 func (s *ResumeGenerateService) buildRequest(data string) (*http.Request, error) {
 	fullPrompt := os.Getenv("AI_RESUME_PROMPT") + " build a resume of the data of this repo. data:" + data
-
 	body := []byte(`{
 		"model": "openai/gpt-4o-mini",
 		"messages": [{"role": "user", "content": "` + escapeJSON(fullPrompt) + `"}]

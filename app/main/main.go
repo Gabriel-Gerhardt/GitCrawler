@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"gitcrawler/app/impl/register"
+	"gitcrawler/app/impl/adapters/register"
 	"log"
 	"net/http"
 

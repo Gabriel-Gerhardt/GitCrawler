@@ -2,9 +2,9 @@ package rest
 
 import (
 	"encoding/json"
-	"gitcrawler/app/impl/dto/request"
-	"gitcrawler/app/impl/dto/response"
-	"gitcrawler/app/impl/facade"
+	"gitcrawler/app/impl/adapters/dto/request"
+	"gitcrawler/app/impl/adapters/dto/response"
+	"gitcrawler/app/impl/adapters/facade"
 	"net/http"
 )
 

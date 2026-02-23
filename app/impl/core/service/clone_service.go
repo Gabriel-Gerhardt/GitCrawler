@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+	"fmt"
 	"os"
 	"os/exec"
 )
@@ -21,7 +23,7 @@ func (c *CloneService) CloneRepository(repositoryUrl string) (string, error) {
 	cmd.Dir = path
 	err = cmd.Run()
 	if err != nil {
-		return path, err
+		return path, errors.New(fmt.Sprintf("Repository not found, project may be private: %s", err.Error()))
 	}
 	return path, nil
 }
