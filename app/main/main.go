@@ -2,9 +2,14 @@ package main
 
 import (
 	"fmt"
+	"gitcrawler/app/impl/adapters/facade"
 	"gitcrawler/app/impl/adapters/register"
+	"gitcrawler/app/impl/core/service"
+	"gitcrawler/app/impl/external/integration"
+	"gitcrawler/app/impl/external/rest"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/joho/godotenv"
 )
@@ -14,8 +19,18 @@ func main() {
 	if err != nil {
 		fmt.Println("Error loading .env file")
 	}
+
+	llm := integration.NewLlmIntegration(os.Getenv("API_KEY"))
+	resumeService := service.NewResumeGenerateService(llm)
+	cloneService := service.NewCloneService()
+	crawlerService := service.NewCrawlerService()
+
+	repoFacade := facade.NewRepositoryFacade(cloneService, crawlerService, resumeService)
+	crawlerController := rest.NewCrawlerController(repoFacade)
+
 	server := http.Server{}
-	register.GetHandlers()
+	register.GetHandlers(crawlerController)
+
 	server.Addr = ":8080"
 	fmt.Println("Running server on " + server.Addr)
 	err = server.ListenAndServe()

@@ -5,7 +5,6 @@ import (
 	contract2 "gitcrawler/app/impl/core/contract"
 	"gitcrawler/app/impl/core/entity"
 	"gitcrawler/app/impl/core/enum"
-	service2 "gitcrawler/app/impl/core/service"
 	strategy2 "gitcrawler/app/impl/core/strategy"
 	"os"
 	"path/filepath"
@@ -18,8 +17,12 @@ type RepositoryFacade struct {
 	resumeGeneratorService contract2.ResumeGeneratorServiceContract
 }
 
-func NewRepositoryFacade() *RepositoryFacade {
-	return &RepositoryFacade{service2.NewCloneService(), service2.NewCrawlerService(), service2.NewResumeGenerateService()}
+func NewRepositoryFacade(cloneService contract2.CloneServiceContract, crawlerService contract2.CrawlerServiceContract, resumeGeneratorService contract2.ResumeGeneratorServiceContract) *RepositoryFacade {
+	return &RepositoryFacade{
+		cloneService:           cloneService,
+		crawlerService:         crawlerService,
+		resumeGeneratorService: resumeGeneratorService,
+	}
 }
 
 func (c *RepositoryFacade) GetRepositoryFiles(url string, extensions []string, dirs []string, option enum.ConversionOption) (err error) {

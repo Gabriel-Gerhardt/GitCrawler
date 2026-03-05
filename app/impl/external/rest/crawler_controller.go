@@ -12,8 +12,8 @@ type CrawlerController struct {
 	repositoryFacade *facade.RepositoryFacade
 }
 
-func NewCrawlerController() *CrawlerController {
-	return &CrawlerController{facade.NewRepositoryFacade()}
+func NewCrawlerController(repositoryFacade *facade.RepositoryFacade) *CrawlerController {
+	return &CrawlerController{repositoryFacade: repositoryFacade}
 }
 
 func (c *CrawlerController) GetRepositoryFiles(w http.ResponseWriter, r *http.Request) {
